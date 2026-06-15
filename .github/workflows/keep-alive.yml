@@ -1,0 +1,28 @@
+name: Keep Alive
+
+on:
+  schedule:
+    # 每个月 1 号凌晨 0 点运行
+    - cron: '0 0 1 * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update keep-alive file
+        run: |
+          date > .keep
+          git add .keep
+          git commit -m "chore: keep alive - auto update"
+          git push
